@@ -1,5 +1,1 @@
-Here you can say lots of fun things about your site.
-
-Maybe say a some things about yourself.
-
-Or maybe what you plan to blog about.
+Hello ! I am currently working as a Senior Software Engineer at [Hellofresh](https://www.hellofresh.com/), Berlin. My daily routine involves building platform services and tooling around Kafka and RabbitMQ to keep the Asynchronous Communications inside the company alive. Before that, I was working at [Exotel](https://exotel.com/), India where I architected the Kubernetes infrastructure and built backend services to power millions of telephone calls and SMS-es everyday. I am Gopher at work and a Rustfanboy at home. Occasionally, I write about things I find interesting.
