@@ -1,3 +1,12 @@
+html {
+  font-size: 1em;
+  line-height: 1.4;
+}
+
+body {
+  font-family: sans-serif;
+}
+
 hr {
   margin-top: 30px;
   margin-bottom: 20px;
