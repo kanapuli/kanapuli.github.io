@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Files on Athavan Kanpuli</title>
+    <link>http://localhost:1313/file/</link>
+    <description>Recent content in Files on Athavan Kanpuli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 22 Feb 2024 18:03:37 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/file/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Resume</title>
+      <link>http://localhost:1313/file/resume/</link>
+      <pubDate>Thu, 22 Feb 2024 18:03:37 +0100</pubDate>
+      <guid>http://localhost:1313/file/resume/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

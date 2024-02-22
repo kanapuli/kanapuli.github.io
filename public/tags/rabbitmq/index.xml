@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rabbitmq on Athavan Kanpuli</title>
+    <link>http://localhost:1313/tags/rabbitmq/</link>
+    <description>Recent content in Rabbitmq on Athavan Kanpuli</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 22 Feb 2024 17:49:36 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/rabbitmq/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Problems With Mirrored Queues</title>
+      <link>http://localhost:1313/posts/problems-with-mirrored-queues/</link>
+      <pubDate>Thu, 22 Feb 2024 17:49:36 +0100</pubDate>
+      <guid>http://localhost:1313/posts/problems-with-mirrored-queues/</guid>
+      <description>Let&amp;rsquo;s talk about classic mirrored queues in Rabbitmq.&#xA;To start with, what is even a Queue ? A queue is an ordered collection of messages.</description>
+    </item>
+  </channel>
+</rss>

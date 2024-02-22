@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Problems With Mirrored Queues - Athavan Kanpuli</title><link rel="icon" type="image/png" href=icons/myicon.png /><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Problems With Mirrored Queues" />
+<meta property="og:description" content="Let&rsquo;s talk about classic mirrored queues in Rabbitmq.
+To start with, what is even a Queue ? A queue is an ordered collection of messages." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/problems-with-mirrored-queues/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-02-22T17:49:36+01:00" />
+<meta property="article:modified_time" content="2024-02-22T17:49:36+01:00" />
+
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Problems With Mirrored Queues"/>
+<meta name="twitter:description" content="Let&rsquo;s talk about classic mirrored queues in Rabbitmq.
+To start with, what is even a Queue ? A queue is an ordered collection of messages."/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.css" />
+	<link rel="stylesheet" type="text/css" href="http://localhost:1313/css/custom.css" />
+	<link rel="stylesheet" type="text/css" href="http://localhost:1313/css/dark.css" media="(prefers-color-scheme: dark)" />
+	<link rel="stylesheet" type="text/css" href="http://localhost:1313/css/custom-dark.css" media="(prefers-color-scheme: dark)" />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="http://localhost:1313/js/main.js"></script>
+	<script src="http://localhost:1313/js/abc.js"></script>
+	<script src="http://localhost:1313/js/xyz.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<base href="http://localhost:1313/">
+	<h1 class="site-title"><a href="http://localhost:1313/">Athavan Kanpuli</a></h1>
+	<div class="site-description"><h2>Small thoughts about Software Engineering</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/kanapuli" title="Github"><i data-feather="github"></i></a><a href="https://www.linkedin.com/in/athavankanapuli/" title="Linkedin"><i data-feather="linkedin"></i></a><a href="/index.xml" title="RSS"><i data-feather="rss"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Problems With Mirrored Queues</h1>
+			<div class="meta">Posted at &mdash; Feb 22, 2024</div>
+		</div>
+
+		<div class="markdown">
+			<p>Let&rsquo;s talk about classic mirrored queues in Rabbitmq.</p>
+<h3 id="to-start-with-what-is-even-a-queue-">To start with, what is even a Queue ?</h3>
+<p>A queue is an ordered collection of messages. Messages can be either enqueued or dequeued from a queue. Usually a queue is tied to a single node and stores the messages.</p>
+<p>But if high availability of the messages is necessary, then a different approach should be taken. Mirrored Queues. Yes, as the name suggests, the queues have to mirrored into different copies in order to keep it highly available. These mirrors have to placed in different brokers so that a failure of one broker won&rsquo;t result in a data loss.</p>
+<p>Among these redundant copies of the same queue, one copy will act as the Master queue and the other copies are called Mirror queues.</p>
+<h3 id="how-is-data-synchronised-between-the-master-queue-and-the-mirrors-">How is data synchronised between the Master queue and the Mirrors ?</h3>
+<p>Rabbitmq uses the <strong>Chain Replication Algorithm</strong> to synchronise data between the masters and the mirrors.</p>
+<p>When a message is published to the master, the master queue forwards the message to its next mirror in the chain. The mirror processes the message and forwards the message to the next mirror in the chain. This continues until the last mirror in the chain notifies the master that the operation is fully replicated. Thus a ring is formed between the master queue and the mirrors.</p>
+<p><img src="/chain-replication.png" alt="Chain replication"></p>
+<h4 id="problem-1-network-calls">Problem 1: Network Calls</h4>
+<p>Let&rsquo;s talk about our first problem in Mirrored queues. During some edge cases when produced message loss, this algorithm is changed so that the publisher channel process would additionally send the message directly to the mirror in addition to publishing to the master. This means that the message has to be forwarded twice in the ring and this is going to make a lot of network calls between the brokers.</p>
+<p><em><strong>Note: Usually the messages are produced to and consumed from the Queue that acts as the master.</strong></em></p>
+<p><img src="/double-send-chain-replication.png" alt="Chain replication double send"></p>
+<h4 id="problem-2-synchronisation">Problem 2: Synchronisation</h4>
+<p>The second problem with mirrored queues arises due to synchronisation. The mirrors can always leave from the chain replication algorithm link due to server restarts or a node failure or due to a network partition.</p>
+<p>When the mirror has been out of communication and then join the ring back, they always start from a clean slate. The joining mirror always wipes it data first and starts synchronisation with the queue master. This mirroring happens fast for smaller queues but could take some minutes, hours or even days to mirror queues with large number of messages. Most importantly, <strong>the mirroring process is a stop the world process.</strong> Producers cannot publish and consumers cannot consume the message unless the mirroring completes.</p>
+<p><img src="/stop-the-world-sync.png" alt="Stop the world sync"></p>
+<h4 id="problem-3-redundancy">Problem 3: Redundancy</h4>
+<p>The third issue with mirrored queues is caused by redundancy. When using mirrored queues, each queue needs a mirror in another broker. For example, if there are 3 brokers and each one has a unique master queue and a mirror of another master queue from a different broker. If one broker fails, Rabbitmq promotes the mirror of the lost master queue to become the new master queue and creates a mirror for it in the only other working broker. This is good, but when the third broker rejoins the cluster, it will be mostly empty, leading to an unbalanced cluster.</p>
+<h4 id="problem-4-network-partition">Problem 4: Network Partition</h4>
+<p>The fourth problem is how mirrored queues handle about the network partitions. When a network paritition occurs, it is going to split the cluster into two halves and we shall end up with one or more mirro that lose communication with the master queue. Here there is a trade off between consistency and availability.</p>
+<p>If one chooses consistency over availability, then the <code>cluster_partition_handling</code> setting has to be set to <code>pause_minority</code> where the minority brokers in the split cluster will be paused from all its operations. On the majority side, the queues continues to operate with reduced redundancy.</p>
+<p><img src="/pause-minority.png" alt=""></p>
+<p>If we want continued availability, we can set the <code>cluster_partition_handling</code> to either <code>ignore</code> or <code>auto-heal</code> mode. This will allow the mirror in the splitted cluster to be promoted to master, meaning we will end up with a state where there are masters for a queue on both halves of the partition. Clients can publish to and consume from both these masters. Unfortunately, when the cluster is healed, one of these master is chosen as victim and restarted, leading to message loss in that queue.</p>
+<p><img src="/auto-heal.png" alt=""></p>
+<h5 id="finally">Finally&hellip;</h5>
+<p>These are the problems with mirrored queues in Rabbitmq and can cause serious troubles when working in an high throughput messaging system. A better replication algorithm is needed and Rabbitmq has come up with Quorum queues. Let&rsquo;s talk about quorum queues in another post.</p>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+					<nav class="nav tags">
+							<ul class="flat">
+								
+								<li><a href="/tags/rabbitmq">rabbitmq</a></li>
+								
+							</ul>
+					</nav>
+				
+			
+		</div>
+		</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+<script>feather.replace()</script>
+</body>
+</html>

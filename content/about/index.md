@@ -1,0 +1,3 @@
+Hey there! I'm a seasoned Senior Software Engineer based in Berlin, currently jazzing up the tech scene at Hellofresh. My days are a whirlwind of coding, event storming, and supercharging Kafka and RabbitMQ to keep our company's communication flow smooth as butter. In my previous gig at Exotel, India, I was the mastermind behind architecting Kubernetes infrastructure and crafting backend services that powered millions of calls and texts daily. At heart, I'm a Gopher by day and a Rust fanatic by night. Oh, and when inspiration strikes, I love sharing my musings on anything that catches my eye.
+
+[Please checkout my Resume](/resume.pdf)
