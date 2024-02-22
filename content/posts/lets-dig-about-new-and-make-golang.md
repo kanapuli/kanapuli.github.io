@@ -2,6 +2,7 @@
 title = "Understanding the Nuances of new() and make() in Go"
 date = 2024-02-22T18:26:57+01:00
 draft = false
+tags = ["go"]
 +++
 
 Go has couple of memory allocation primitives: `new()` and `make()`.
