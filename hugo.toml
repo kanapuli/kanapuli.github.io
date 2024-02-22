@@ -70,6 +70,11 @@ icon = "linkedin"
 url = "https://www.linkedin.com/in/athavankanapuli/"
 
 [[params.social]]
+name = "Youtube"
+icon = "youtube"
+url = "https://www.youtube.com/channel/UCig-G6_lg68cGMd7Rs2w4zA"
+
+[[params.social]]
 name = "RSS"
 icon = "rss"
 url = "/index.xml"

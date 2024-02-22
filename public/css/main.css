@@ -92,7 +92,7 @@ h1,h2,h3,h4,h5,h6 {
     font-family: raleway,sans-serif;
     line-height: 1.2;
     color: #333;
-    font-weight: 200;
+    font-weight: 500;
 }
 
 h1 {
@@ -183,7 +183,8 @@ ul {
     margin-bottom: 0;
     margin-top: 0;
     padding: 20px;
-    background-color: transparent !important;
+    /* The following line is commented otherwise it will mess the colors in markdown code block  */
+    /* background-color: transparent !important; */
 }
 
 .highlight {

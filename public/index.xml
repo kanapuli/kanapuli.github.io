@@ -6,8 +6,15 @@
     <description>Recent content on Athavan Kanpuli</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 22 Feb 2024 17:49:36 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 22 Feb 2024 18:26:57 +0100</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Let&#39;s Think a second about New and Make in Go</title>
+      <link>http://localhost:1313/posts/lets-dig-about-new-and-make-golang/</link>
+      <pubDate>Thu, 22 Feb 2024 18:26:57 +0100</pubDate>
+      <guid>http://localhost:1313/posts/lets-dig-about-new-and-make-golang/</guid>
+      <description>Go has couple of memory allocation primitives which are new() and make().&#xA;New() new() is allocation primitive which initializes the memory of a type T with it&amp;rsquo;s zero values.</description>
+    </item>
     <item>
       <title>Problems With Mirrored Queues</title>
       <link>http://localhost:1313/posts/problems-with-mirrored-queues/</link>
