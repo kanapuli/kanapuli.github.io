@@ -1,6 +1,6 @@
 +++
 title = 'Problems With Mirrored Queues'
-date = 2024-02-22T17:49:36+01:00
+date = 2024-02-21T17:49:36+01:00
 draft = false
 tags = ['rabbitmq']
 +++
