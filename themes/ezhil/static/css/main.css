@@ -183,7 +183,7 @@ ul {
     margin-bottom: 0;
     margin-top: 0;
     padding: 20px;
-    background-color: transparent !important;
+    /* background-color: transparent !important; */
 }
 
 .highlight {

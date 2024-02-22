@@ -13,7 +13,7 @@
       <link>http://localhost:1313/posts/lets-dig-about-new-and-make-golang/</link>
       <pubDate>Thu, 22 Feb 2024 18:26:57 +0100</pubDate>
       <guid>http://localhost:1313/posts/lets-dig-about-new-and-make-golang/</guid>
-      <description>Go has couple of memory allocation primitives which are new() and make().&#xA;New() new() is allocation primitive which initializes the memory of a type T with it&amp;rsquo;s zero values.</description>
+      <description>Go has couple of memory allocation primitives which are new() and make().&#xA;New() new() is allocation primitive which allocates the memory of for type T but zeros it.</description>
     </item>
     <item>
       <title>Problems With Mirrored Queues</title>

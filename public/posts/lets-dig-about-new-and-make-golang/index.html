@@ -4,16 +4,16 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Let&#39;s Think a second about New and Make in Go - Athavan Kanpuli</title><link rel="icon" type="image/png" href=icons/myicon.png /><meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta property="og:title" content="Let&#39;s Think a second about New and Make in Go" />
-<meta property="og:description" content="Go has couple of memory allocation primitives which are new() and make().
-New() new() is allocation primitive which initializes the memory of a type T with it&rsquo;s zero values." />
+<meta property="og:description" content="Go has couple of memory allocation primitives: new() and make().
+new(T) new(T) is allocation primitive which allocates the memory for type T but zeros it." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/posts/lets-dig-about-new-and-make-golang/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-02-22T18:26:57+01:00" />
 <meta property="article:modified_time" content="2024-02-22T18:26:57+01:00" />
 
 <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Let&#39;s Think a second about New and Make in Go"/>
-<meta name="twitter:description" content="Go has couple of memory allocation primitives which are new() and make().
-New() new() is allocation primitive which initializes the memory of a type T with it&rsquo;s zero values."/>
+<meta name="twitter:description" content="Go has couple of memory allocation primitives: new() and make().
+new(T) new(T) is allocation primitive which allocates the memory for type T but zeros it."/>
 <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
 
 	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/normalize.css" />
@@ -65,18 +65,57 @@ New() new() is allocation primitive which initializes the memory of a type T wit
 
 		<div class="post-header">
 			<h1 class="title">Let&#39;s Think a second about New and Make in Go</h1>
-			<div class="meta">Posted at &mdash; Feb 22, 2024 <span class="draft-label">DRAFT</span> </div>
+			<div class="meta">Posted at &mdash; Feb 22, 2024</div>
 		</div>
 
 		<div class="markdown">
-			<p>Go has couple of memory allocation primitives which are <code>new()</code> and <code>make()</code>.</p>
-<h3 id="new">New()</h3>
-<p><code>new()</code> is allocation primitive which initializes the memory of a type <code>T</code> with it&rsquo;s zero values. It returns a pointer <code>*T</code> and the value is readily available for usage.</p>
+			<p>Go has couple of memory allocation primitives: <code>new()</code> and <code>make()</code>.</p>
+<h3 id="newt">new(T)</h3>
+<p><strong>new(T)</strong> is allocation primitive which allocates the memory for type <code>T</code> but zeros it. Unlike Java or C#, go does not do further initialization. new(T) returns a pointer <code>*T</code>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;bytes&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">bytes</span>.<span style="color:#a6e22e">Buffer</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">Len</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">n</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;Hello hello&#34;</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">n</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">WriteTo</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">user</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">User</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;\n%#v&#34;</span>, <span style="color:#a6e22e">user</span>)
 </span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Output:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 11
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// Hello hello
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// &amp;main.User{Name:&#34;&#34;}
+</span></span></span></code></pre></div><p>As shown in the output, the variable for buffer <strong>b</strong> is allocated with zeroed memory but the variable is still available for immediate usage to write contents.</p>
+<p><strong>new()</strong> is specially useful to create types like buffer or mutex whose zero values could be used without further initialization.</p>
+<p>The expressions <strong>new(User)</strong> and <strong>&amp;User{}</strong> are equivalent.</p>
+<h3 id="maket-args">make(T, args)</h3>
+<p><strong>make()</strong> is different from <strong>new()</strong> in the sense that it initializes memory for type <strong>T</strong> and it takes <em>length</em> and <em>capacity</em> as arguments.</p>
+<p>Only channels, slices and maps can be created using <strong>make()</strong> and these types references to another underlying data structures that must be initialized at the first place in order to be useful.</p>
+<p>For example,</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">50</span>)
+</span></span></code></pre></div><p><strong>s</strong> is a slice which references to another underlying array that is initializedwith 50 elements and <strong>s</strong> points to the first 10 elements in that array.</p>
+<p>One can initialize a slice using <strong>new()</strong> but the resulting value is <em>nil</em> and is rarely useful to contain elements.</p>
+<p>Another distinction of <strong>make(T, args)</strong> and <strong>new(T)</strong> is that <strong>make</strong> do not return a pointer but returns type <strong>T</strong>.</p>
+<p>The following example explains the difference between make and new,</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span>[]<span style="color:#66d9ef">int</span> = new([]<span style="color:#66d9ef">int</span>)       <span style="color:#75715e">// allocates slice structure; *p == nil; rarely useful
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">v</span>  []<span style="color:#66d9ef">int</span> = make([]<span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">100</span>) <span style="color:#75715e">// the slice v now refers to a new array of 100 ints
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Unnecessarily complex:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span>[]<span style="color:#66d9ef">int</span> = new([]<span style="color:#66d9ef">int</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">*</span><span style="color:#a6e22e">p</span> = make([]<span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Idiomatic:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">100</span>)
 </span></span></code></pre></div>
 		</div>
 
