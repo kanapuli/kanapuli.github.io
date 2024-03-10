@@ -5,11 +5,9 @@ draft = false
 tags = ["rabbitmq"]
 +++
 
-# Playing with RabbitMQ Federation
-
 ## Hallo!!!
 
-I was reading about RabbitMQ Federation recently and thought to play with the feature to check if federation can be used to migrate RabbitMQ clients across different clusters with near-zero downtime. The objective of this post is to outline the steps required to set up a federation between two RabbitMQ brokers `blue`(upstream) and `green`(downstream) and test the client's behaviour while switching them back and fro between `blue` and `green` clusters. Federation allows exchanges and queues to be mirrored between RabbitMQ brokers, enabling data distribution and replication.
+I recently read about RabbitMQ Federation and wanted to experiment with its features to see if it could facilitate the migration of RabbitMQ clients across different clusters with near-zero downtime and no message loss. The objective of this post is to outline the steps required to set up federation between two RabbitMQ brokers, `blue` (upstream) and `green` (downstream), and to test the behavior of clients while switching them back and forth between the `blue` and `green` clusters. Federation enables the mirroring of exchanges and queues between RabbitMQ brokers, thereby enabling data distribution and replication.
 
 ## Environment Setup
 
@@ -48,8 +46,8 @@ docker exec -it blue  rabbitmqadmin -u admin -p admin declare queue name=custome
 # Declare Bindings
 docker exec -it blue  rabbitmqadmin -u admin -p admin declare binding source=customers destination=customers.us routing_key=us
 docker exec -it blue  rabbitmqadmin -u admin -p admin declare binding source=customers destination=customers.de routing_key=de
-
 ```
+
 ## Step 2: Sync Cluster Settings
 
 The settings such as username, queues, exchanges and their bindings have to be copied from the `blue` server to the `green` server.
@@ -74,7 +72,7 @@ Now try to open the management console of the `green` cluster using `http://loca
 
 The `blue` and `green` clusters are configured in the docker-compose file to include the Federation plugin already. 
 
-### 1.1 Establish Federation Link at the Green cluster
+### 3.1 Establish Federation Link at the Green cluster
 
 Create a Federation link using the management UI of the downstream server, `green` first.
 
@@ -86,7 +84,7 @@ The following values are set for the Federation link in the UI
 - URI: `amqp://admin:admin@blue:5672`
 - Exchange: `.*` (This value can be also set to any other regular expression pattern to filter Exchanges that need to be federated.)
 
-### 1.2 Establish Federation Link at the Blue cluster (Optional)
+### 3.2 Establish Federation Link at the Blue cluster (Optional)
 
 This step must be done only when you need the Bidirectional data flow. By having a Bidirectional data flow, clients can switch back to the `blue` cluster if they find something doesn't work in the `green` cluster.
 
@@ -118,7 +116,7 @@ If you had set Federation in the `blue` cluster in the previous step, run the fo
 docker exec -it blue rabbitmqctl set_policy --vhost "/" --apply-to "all" federation ".*" '{"federation-upstream-set": "all"}'
 ```
 
-## Step 5: Test with the Publisher and Consumer
+## Step 5: Test Federation with the Publisher and Consumer
 
 ### Step 5.1: Run the Publisher to the Blue Cluster
 
@@ -164,6 +162,6 @@ The consumer which is running in the `green` cluster can consume the new message
 
 ## Conclusion
 
-Thus **Federation** is a great mechanism to move RabbitMQ clients across different clusters. This feature becomes super useful when migrating the RabbitMQ clusters. However, an important note is Federation do not relay messages which are published to the **default** exchange.
+In conclusion, Federation emerges as an excellent mechanism for seamlessly transitioning RabbitMQ clients between different clusters with minimal downtime and no message loss. This capability proves invaluable during the migration of RabbitMQ clusters, ensuring uninterrupted service and data integrity. However, it's crucial to note that Federation does not relay messages published to the default exchange. In such scenarios, messages must be migrated to the new cluster using the shovel plugin.
 
-That's all for now. See you all in another post. :)
+That wraps up this post. Stay tuned for more insights in future articles! :)
