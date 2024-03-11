@@ -11,6 +11,8 @@ I recently read about RabbitMQ Federation and wanted to experiment with its feat
 
 ## Environment Setup
 
+The code for this experiment can be found in the repository https://github.com/kanapuli/rabbitmq-federation-setup
+
 - Docker compose file `docker-compose.yaml` defines two RabbitMQ instances:
     - `blue`: Upstream RabbitMQ broker
     - `green`: Downstream RabbitMQ broker
